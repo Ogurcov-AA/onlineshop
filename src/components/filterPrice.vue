@@ -38,6 +38,7 @@
           hide-details
           thumb-color="red"
           color="#00BCD4"
+          thumb-label
           class="align-center"/>
     </div>
   </div>
