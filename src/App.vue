@@ -1,12 +1,10 @@
 <template>
-  <div>
     <v-app>
       <component :is="layout"/>
-      <v-main>
+      <v-main style="background: #F2EEF1">
         <router-view/>
       </v-main>
     </v-app>
-  </div>
 </template>
 
 <script>
@@ -18,3 +16,12 @@ export default {
   }
 };
 </script>
+
+<style lang="scss">
+.main-field {
+  width: 80%;
+  margin: 0 10%;
+  background: white;
+  min-height: 100%;
+}
+</style>
