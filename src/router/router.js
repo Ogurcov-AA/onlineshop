@@ -12,5 +12,10 @@ export default new Router({
             name: 'home',
             component: () => import('../views/Home.vue')
         },
+        {
+            path: '/product/:id',
+            name: 'product',
+            component: () => import('../views/AboutProduct.vue')
+        },
     ]
 })
