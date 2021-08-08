@@ -9,8 +9,12 @@
               dark
               depressed
               elevation="10"
+              @click.stop="isShowLogin=true"
           >войти
           </v-btn>
+         <login v-if="isShowLogin"
+                v-bind:dialog="isShowLogin"
+                @response="changeShowLoginFlag"></login>
         </div>
         <div class="header-filters">
           <filterPrice v-bind:min="0" v-bind:max="100" class="filter-right-margin"/>
@@ -29,14 +33,28 @@ import filterPrice from "../components/filterPrice";
 import filterCategories from "../components/filterCategories";
 import availableFilter from "../components/availableFilter";
 import navBar from "../components/navBar";
-
+import login from "../components/login";
 export default {
+  data(){
+    return{
+      isShowLogin: false
+    }
+  },
   components: {
     searchElement,
     filterPrice,
     filterCategories,
     availableFilter,
-    navBar
+    navBar,
+    login
+  },
+  methods:{
+    changeShowLoginFlag(res){
+      this.isShowLogin = false
+      if(res!==null){
+        return true
+      }
+    }
   }
 }
 </script>
