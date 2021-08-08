@@ -1,6 +1,6 @@
 <template>
   <div>
-    <v-app-bar dense prominent color="#008C9E" style="height: 9rem">
+    <v-app-bar dense prominent color="#008C9E" style="height: 8rem">
       <div class="header">
         <div class="search-field-position">
           <searchElement class="search-element"/>
