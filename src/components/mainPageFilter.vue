@@ -23,10 +23,10 @@
       </v-select>
     </div>
     <div>
-      <v-btn plain large class="px-0">
+      <v-btn plain large class="px-0" @click="displayType('card')">
         <img src="../assets/Tiles.svg" alt="">
       </v-btn>
-      <v-btn plain large class="px-0">
+      <v-btn plain large class="px-0" @click="displayType('line')">
         <img src="../assets/List.svg" alt="">
       </v-btn>
     </div>
@@ -36,7 +36,12 @@
 <script>
 export default {
   name: "mainPageFilter",
-  props: ['message']
+  props: ['message'],
+  methods:{
+    displayType(str){
+      this.$emit('display',str)
+    }
+  }
 }
 </script>
 
