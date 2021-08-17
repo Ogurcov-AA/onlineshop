@@ -4,17 +4,26 @@
       <div class="header">
         <div class="search-field-position">
           <searchElement class="search-element"/>
-          <v-btn
-              color="#0000003D"
-              dark
-              depressed
-              elevation="10"
-              @click.stop="isShowLogin=true"
-          >войти
-          </v-btn>
-         <login v-if="isShowLogin"
-                v-bind:dialog="isShowLogin"
-                @response="changeShowLoginFlag"></login>
+          <div style="width: 10%; height: 2rem">
+              <v-btn
+                  v-if="!$auth.isAuthenticated && !$auth.loading"
+                  color="#0000003D"
+                  dark
+                  depressed
+                  elevation="10"
+                  @click="login"
+              >войти
+              </v-btn>
+              <v-btn
+                  v-if="$auth.isAuthenticated && !$auth.loading"
+                  color="#0000003D"
+                  dark
+                  depressed
+                  elevation="10"
+                  @click="logout"
+              >Выйти
+              </v-btn>
+          </div>
         </div>
         <div class="header-filters">
           <filterPrice v-bind:min="0" v-bind:max="100" class="filter-right-margin"/>
@@ -33,27 +42,23 @@ import filterPrice from "../components/filterPrice";
 import filterCategories from "../components/filterCategories";
 import availableFilter from "../components/availableFilter";
 import navBar from "../components/navBar";
-import login from "../components/login";
+
 export default {
-  data(){
-    return{
-      isShowLogin: false
-    }
-  },
   components: {
     searchElement,
     filterPrice,
     filterCategories,
     availableFilter,
     navBar,
-    login
   },
-  methods:{
-    changeShowLoginFlag(res){
-      this.isShowLogin = false
-      if(res!==null){
-        return true
-      }
+  methods: {
+    login() {
+      this.$auth.loginWithPopup()
+    },
+    logout() {
+      this.$auth.logout({
+        returnTo: window.location.origin
+      });
     }
   }
 }
@@ -66,22 +71,26 @@ export default {
   margin-top: 2%;
   justify-content: space-around;
 }
-.header{
+
+.header {
   display: flex;
   flex-direction: column;
   width: 100rem;
   margin: 0 auto
 }
-.search-element{
+
+.search-element {
   max-width: 100vw;
   min-width: 40vw;
 }
-.header-filters{
-  display:flex;
+
+.header-filters {
+  display: flex;
   align-items: center;
   justify-content: space-evenly
 }
-.filter-right-margin{
+
+.filter-right-margin {
   margin-right: 5rem;
 }
 
