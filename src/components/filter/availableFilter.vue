@@ -1,7 +1,7 @@
 <template>
   <div style="align-items: center">
     <v-switch
-        v-model="switch1"
+        v-model="isAvailable"
         :label="'В наличии'"
         color="#00BCD4"
         style="height: 20px;font-size: 20px; width: 20rem"
@@ -10,13 +10,22 @@
 </template>
 
 <script>
+import {eventBus} from "../main";
+
 export default {
 name: "availableFilter",
   data () {
     return {
-      switch1: true,
+      isAvailable: true,
     }
   },
+  watch:{
+    isAvailable(ne){
+      eventBus.$emit('availableFilter', {
+        isAvailable: ne
+      })
+    }
+  }
 }
 </script>
 

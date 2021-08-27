@@ -3,7 +3,7 @@
     <div class="price-filter--text">
       <label>Цена от </label>
       <v-text-field
-          :value="range[0]"
+          v-model="range[0]"
           class="mt-0 pt-0"
           hide-details
           single-line
@@ -17,7 +17,7 @@
 
       <label> до </label>
       <v-text-field
-          :value="range[1]"
+          v-model="range[1]"
           class="mt-0 pt-0"
           hide-details
           single-line
@@ -45,12 +45,33 @@
 </template>
 
 <script>
+
+import {eventBus} from "../main";
+
 export default {
   name: "filterItems",
-  props: ['min', 'max'],
   data() {
     return {
+      min: '0',
+      max: '0',
       range: [this.min, this.max]
+    }
+  },
+  created() {
+    eventBus.$on('priceFilter', data => {
+      let min = Math.floor(data.minPrice)
+      let max = Math.ceil(data.maxPrice)
+      this.max = max
+      this.min = min
+      this.range = [min, max]
+    })
+  },
+  watch: {
+    range() {
+      eventBus.$emit('sortByPrice', {
+        minPrice: this.range[0],
+        maxPrice: this.range[1]
+      })
     }
   }
 }
@@ -64,6 +85,7 @@ export default {
   justify-items: center;
   flex-direction: column;
   margin: 1% 0 0 2%;
+
   label {
     margin-right: 10px;
     font-size: 16px;
@@ -78,7 +100,7 @@ export default {
   align-items: center;
 }
 
-.price-filter--slider{
+.price-filter--slider {
 }
 
 </style>
