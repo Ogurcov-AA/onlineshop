@@ -17,13 +17,13 @@ const auth = {
     uiConfig: null,
     ui: null,
 
-    init(context) {
+    init(context, callback) {
         this.context = context;
         if (!firebase.apps.length) {
             firebase.initializeApp(config);
         }
         this.uiConfig = {
-            signInSuccessUrl: '/',
+            signInSuccessUrl: '/category/all',
             signInOptions: [
                 firebase.auth.FacebookAuthProvider.PROVIDER_ID,
                 firebase.auth.GoogleAuthProvider.PROVIDER_ID,
@@ -31,25 +31,26 @@ const auth = {
             ]
         }
         this.ui = new firebaseui.auth.AuthUI(firebase.auth());
-
         firebase.auth().onAuthStateChanged((user) => {
-            this.context.$store.dispatch('setCurrentUser')
-
-            let requireAuth = this.context.$route.matched.some(record => record.meta.requireAuth)
-            let guestOnly = this.context.$route.matched.some(record => record.meta.guestOnly)
-
-            if(requireAuth && !user) this.context.$router.push('auth')
-            else if (guestOnly && user) this.context.$router.push('/product/1')
+            callback(user)
         });
     },
     authForm(container) {
         this.ui.start(container, this.uiConfig);
     },
     user() {
-        return this.context ? firebase.auth().currentUser : null;
+        if (this.context) {
+            return firebase.auth().currentUser
+        } else {
+            return null
+        }
     },
     logout() {
-        firebase.auth().signOut();
+        firebase.auth().signOut()
+            .then(() => {
+            })
+            .catch(() => {
+            });
     }
 }
 

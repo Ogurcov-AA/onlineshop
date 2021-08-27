@@ -13,7 +13,7 @@
 </template>
 
 <script>
-import auth from "../auth";
+import auth from "../../auth";
 
 export default {
 
@@ -30,5 +30,5 @@ name: "login",
 </script>
 
 <style scoped>
-@import "../../node_modules/firebaseui/dist/firebaseui.css";
+@import "../../../node_modules/firebaseui/dist/firebaseui.css";
 </style>
