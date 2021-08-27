@@ -1,14 +1,13 @@
 import firebase from "firebase/app";
 
 const config = {
-    apiKey: process.env.API_KEY,
-    authDomain: process.env.AUTH_DOMAIN,
-    databaseURL: process.env.DATABASE_URL,
-    projectId: process.env.PROJECT_ID,
-    storageBucket: process.env.STORAGE_BUCKET,
-    messagingSenderId: process.env.MESSAGING_SENDER_ID,
-    appId: process.env.APP_ID,
-    measurementId: process.env.MEASUREMENT_ID
+    apiKey: "AIzaSyDQ512Xjo0IQhRXOiIW5KomBdClaKk0WtU",
+    authDomain: "onlineshop-9e085.firebaseapp.com",
+    databaseURL: "https://onlineshop-9e085-default-rtdb.europe-west1.firebasedatabase.app",
+    projectId: "onlineshop-9e085",
+    storageBucket: "onlineshop-9e085.appspot.com",
+    messagingSenderId: "955013544277",
+    appId: "1:955013544277:web:1de5749d37a24d3125d7dc",
+    measurementId: "G-DRN7NZQN7J"
 };
-
 firebase.initializeApp(config);
