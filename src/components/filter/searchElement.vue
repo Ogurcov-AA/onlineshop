@@ -1,6 +1,12 @@
 <template>
-  <div>
-    <v-layout row align-center>
+    <div class="d-flex py-0">
+      <v-btn icon color="white"
+             elevation="2"
+             class="mx-10"
+             style="background-color: #0000003D"
+             @click="redirectToMainPage">
+        <v-icon>mdi-home</v-icon>
+      </v-btn>
       <v-text-field
           v-model="searchStr"
           solo
@@ -12,26 +18,29 @@
           @keyup="keyPress"
           hide-details
       ></v-text-field>
-    </v-layout>
-  </div>
+    </div>
 </template>
 
 <script>
-import {eventBus} from '../main'
+import {eventBus} from '../../main'
 
 export default {
-  data(){
-    return{
-    searchStr: null
+  data() {
+    return {
+      searchStr: null
     }
   },
-  methods:{
-    async keyPress(event){
+  methods: {
+    async keyPress(event) {
       if (event.keyCode === 13) {
         eventBus.$emit('searchStr', {
           searchStr: this.searchStr
         })
       }
+    },
+    redirectToMainPage() {
+      if (this.$route.path !== '/')
+        this.$router.push('/')
     }
   }
 }
