@@ -1,5 +1,5 @@
 <template>
-  <div style="width: 10%; height: 2rem">
+  <div class="mx-15">
     <div v-if="!userIsLoading">
       <v-btn
           color="#0000003D"
@@ -9,9 +9,18 @@
           @click="login"
       >войти
       </v-btn>
-      <login v-if="isLogin"/>
+      <login v-if="dialog"
+             v-bind:dialog="dialog"
+             @closeLoginDialog="dialog=false"/>
     </div>
-    <div v-else>
+    <div v-else class="d-flex align-center">
+      <v-btn icon
+             outlined
+             class="mx-10"
+             @click="redirectToBasket">
+        <span class="red--text text-h6 text--accent-2">{{ getBasketCount }}</span>
+        <v-icon>mdi-basket</v-icon>
+      </v-btn>
       <v-btn
           color="#0000003D"
           dark
@@ -34,27 +43,33 @@ export default {
   },
   data() {
     return {
-      isLogin: false
+      dialog: false,
     }
   },
   methods: {
     login() {
-      this.isLogin = true
+      this.dialog = true
     },
     logout() {
-      if(this.$route.path.indexOf('admin')!==-1 || this.$route.path.indexOf('basket')!==-1) {
-       console.log("+")
+      if (this.$route.path.indexOf('admin') !== -1 || this.$route.path.indexOf('basket') !== -1) {
         this.$router.push('/')
       }
       this.$store.dispatch('logoutUser')
-
+    },
+    redirectToBasket() {
+      if (this.$route.path !== '/basket') {
+        this.$router.push('/basket')
+      }
     }
   },
   computed: {
     userIsLoading() {
       return this.$store.getters.isLogged
-    }
-  },
+    },
+    getBasketCount() {
+      return Object.keys(this.$store.getters.basket)?.length
+    },
+  }
 }
 </script>
 

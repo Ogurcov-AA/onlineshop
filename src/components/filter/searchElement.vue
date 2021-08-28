@@ -39,7 +39,7 @@ export default {
       }
     },
     redirectToMainPage() {
-      if (this.$route.path !== '/')
+      if (this.$route.path !== '/' && this.$route.path !== '/category/all' )
         this.$router.push('/')
     }
   }
