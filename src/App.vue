@@ -1,17 +1,24 @@
 <template>
-    <v-app>
-      <component :is="layout"/>
-      <v-main style="background: #F2EEF1">
-        <router-view/>
-      </v-main>
-    </v-app>
+  <v-app>
+    <component :is="layout"/>
+    <v-main style="background: #F2EEF1">
+      <keep-alive>
+        <router-view v-if="$route.meta.keepAlive"/>
+      </keep-alive>
+      <router-view v-if="!$route.meta.keepAlive"/>
+    </v-main>
+    <v-footer padless dark>
+      <v-spacer></v-spacer>
+      <div>&copy; {{ new Date().getFullYear() }}</div>
+    </v-footer>
+  </v-app>
 </template>
 
 <script>
 export default {
   computed: {
     layout() {
-      return this.$route.meta.layout || 'default-layout'
+      return this.$route.meta.layout || 'loading-layout'
     }
   }
 };
