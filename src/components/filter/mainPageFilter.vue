@@ -24,10 +24,10 @@
     </div>
     <div>
       <v-btn plain large class="px-0" @click="displayType('card')">
-        <img src="../assets/Tiles.svg" alt="">
+        <img src="../../assets/Tiles.svg" alt="">
       </v-btn>
       <v-btn plain large class="px-0" @click="displayType('line')">
-        <img src="../assets/List.svg" alt="">
+        <img src="../../assets/List.svg" alt="">
       </v-btn>
     </div>
   </div>
