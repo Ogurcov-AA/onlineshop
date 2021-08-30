@@ -1,7 +1,7 @@
 <template>
   <section>
     <div class="d-flex">
-      <div style="width: 70rem">
+      <div class="basket-card-field">
         <basketElement
             v-for="item in basketProduct" :key="item.basketProductId"
             v-bind:count="item.count"
@@ -13,7 +13,7 @@
             v-bind:checked="item.checked"
             @changeCheckBox="addToSelectedProduct"
             @changeCount="changeCount"/>
-        <div class="d-flex align-center justify-space-around">
+        <div class="d-flex align-center justify-space-around flex-column flex-md-row">
           <v-checkbox
               v-model="selectedAll"
               color="primary"
@@ -28,10 +28,13 @@
           </v-btn>
         </div>
       </div>
-      <ordering v-bind:count="getCountSelectedProduct"
-                v-bind:sum="getSumSelectedProduct"
-                v-bind:productList="selectProduct"
-                style="width: 30%; background-color: white"/>
+      <ordering
+          class="slide-container"
+          v-bind:count="getCountSelectedProduct"
+          v-bind:sum="getSumSelectedProduct"
+          v-bind:productList="selectProduct"
+          @deleteProductFromBasket="deleteSelectedProduct"
+          style="background-color: white"/>
     </div>
   </section>
 </template>
@@ -55,18 +58,9 @@ export default {
     basketElement,
     ordering
   },
-  beforeRouteEnter(to, from, next) {
-    next(vm => {
-      if (!vm.$store.getters.user) {
-        vm.$router.push('/pagenotfound')
-      }
-    })
-  },
   created() {
-    let test = this.$store.getters.basket
-    test = Object.entries(test)
     this.basketProduct = []
-    test.forEach(item => {
+    Object.entries(this.$store.getters.basket).forEach(item => {
       this.basketProduct.push({
         basketProductId: item[0],
         id: item[1].id,
@@ -94,33 +88,35 @@ export default {
         })
       }
     },
-    changeCount(data){
-      this.basketProduct.forEach(item=>{
-        if(item.basketProductId === data.basketProductId)
+    changeCount(data) {
+      this.basketProduct.forEach(item => {
+        if (item.basketProductId === data.basketProductId)
           item.count = data.count
       })
-      console.log(this.basketProduct)
     },
-   async reRenderBasketList(list) {
+    async reRenderBasketList(list) {
       this.basketProduct = []
       await this.$nextTick()
       this.basketProduct = [...list]
     },
-    deleteSelectedProduct() {
-      this.selectProduct.forEach((itemS, indexS) => {
-        this.basketProduct.forEach((itemB, indexB) => {
-          if (itemS.basketProductId === itemB.basketProductId) {
-            this.$store.dispatch('deleteProduct', {
-              basketProductId: itemS.basketProductId,
-              uid: this.$store.getters.user.uid
-            })
-            this.basketProduct.splice(indexB, 1)
-            this.selectProduct.splice(indexS, 1)
-
-          }
-        })
+    removeSelectProductFromBasket(basketElement) {
+      this.selectProduct.forEach((item) => {
+        if (item.basketProductId === basketElement)
+          return true
       })
-      console.log(this.selectProduct, this.basketProduct)
+      return false
+    },
+
+    deleteSelectedProduct() {
+      this.basketProduct = this.basketProduct.filter(item => {
+        this.$store.dispatch('deleteProduct', {
+          basketProductId: item.basketProductId,
+          uid: this.$store.getters.user.uid
+        })
+        this.removeSelectProductFromBasket(item)
+      })
+      this.selectedAll = false
+      this.selectProduct = []
     }
   },
   computed: {
@@ -130,7 +126,7 @@ export default {
     getSumSelectedProduct() {
       if (this.selectProduct.length !== 0) {
         let test = this.selectProduct.reduce((acc, item) => {
-          return acc + (item.price*item.count)
+          return acc + (item.price * item.count)
         }, 0)
         return test
       } else return 0
@@ -152,6 +148,18 @@ export default {
 }
 </script>
 
-<style scoped>
+<style lang="scss" scoped>
+.basket-card-field {
+  width: 70%;
+  @media (min-width: 100px) and (max-width: 800px) {
+    width: 100%;
+  }
+}
 
+.slide-container {
+  width: 30%;
+  @media (min-width: 100px) and (max-width: 800px) {
+    width: 60%;
+  }
+}
 </style>
