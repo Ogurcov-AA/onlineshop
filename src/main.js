@@ -22,10 +22,6 @@ Vue.component('loading-layout',LoadingLayout)
 Vue.config.productionTip = false
 auth.init(this, async (user)=>{
    await store.dispatch('setCurrentUser',user)
-    if(user!==null){
-        await store.dispatch('getBasket',user.uid)
-    }
-
 new Vue({
     store,
     vuetify,
@@ -33,4 +29,8 @@ new Vue({
     router,
     render: h => h(App)
 }).$mount('#app')
+    if(user!==null){
+        await store.dispatch('getBasket',user.uid)
+    }
+
 })

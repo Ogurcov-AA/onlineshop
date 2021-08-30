@@ -27,5 +27,5 @@ export function deleteProductFromBasket(basketID, uid) {
 }
 
 export function ordering(uid,order){
-    firebase.database().ref('order').child(uid).child('product').push(order)
+    firebase.database().ref('order').child(uid).push(order)
 }
