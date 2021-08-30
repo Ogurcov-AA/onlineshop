@@ -99,7 +99,6 @@ export const router = new Router({
 })
 
 router.beforeEach(async (to, from, next) => {
-    console.log((!to.meta?.requireAuth && !!store.getters.user))
     if (((to.meta?.requireAuth && !!store.getters.user) ||
         (!to.meta?.requireAuth && !!store.getters.user) ||
         (!to.meta?.requireAuth && !!store.getters.user === false)) &&
