@@ -1,42 +1,57 @@
 <template>
-  <v-toolbar
-      color="cyan"
-      dark
-      dense>
+  <v-sheet elevation="6">
     <v-tabs
-        v-model="tab"
-        align-with-title
-        class="ml-0">
-
-      <v-tab class="mx-0"><v-icon large>mdi-home</v-icon>Все категории</v-tab>
-      <v-divider vertical></v-divider>
+        v-model="activeTab"
+        background-color="cyan"
+        dark
+        next-icon="mdi-arrow-right-bold-box-outline"
+        prev-icon="mdi-arrow-left-bold-box-outline"
+        show-arrows
+    >
       <v-tabs-slider color="red"></v-tabs-slider>
+      <v-tab @click="jumpNewPage('/category/all')">
+        <v-icon large>mdi-home</v-icon>
+        Все категории
+      </v-tab>
       <v-tab
-          v-for="item in items"
-          :key="item"
-          v-on:click="test">
-        {{ item }}
+          v-for="(i,index) in category"
+          :key="index+1"
+          @click="jumpNewPage(i.url)"
+      >
+        {{ i.name }}
       </v-tab>
     </v-tabs>
-
-  </v-toolbar>
-
+  </v-sheet>
 </template>
 
 <script>
 export default {
   name: "navBar",
+  props: ['category'],
   data() {
     return {
-      tab: null,
-      items: [
-        'кошки', 'собаки', 'рыбки', 'грызуны','змеи', 'насекомые', 'другое'
-      ],
+      tabIndex: null
     }
   },
-  methods:{
-    test(e){
-      console.log(e.target.textContent)
+  methods: {
+    jumpNewPage(url) {
+      if (this.$route.path !== url) {
+        this.$router.push(url)
+      }
+    }
+  },
+  computed: {
+    activeTab: {
+      get() {
+        let tabIndex = 0
+        this.category.forEach((item, index) => {
+          if (item.url === this.$route.path)
+            tabIndex = index + 1
+        })
+        return tabIndex
+      },
+      set() {
+      }
     }
   }
 }
