@@ -7,6 +7,7 @@
       </keep-alive>
       <router-view v-if="!$route.meta.keepAlive"/>
     </v-main>
+    <snackbar/>
     <v-footer padless dark>
       <v-spacer></v-spacer>
       <div>&copy; {{ new Date().getFullYear() }}</div>
@@ -15,7 +16,12 @@
 </template>
 
 <script>
+import snackbar from "./components/snackbar";
+
 export default {
+  components:{
+    snackbar
+  },
   computed: {
     layout() {
       return this.$route.meta.layout || 'loading-layout'
