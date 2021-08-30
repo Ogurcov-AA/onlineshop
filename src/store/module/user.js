@@ -1,28 +1,30 @@
-import auth from '../../auth/index.js';
+import auth from "../../auth";
 
 const user = {
     state: {
         user: null
     },
     mutations: {
-        setUser (state, user) {
+        setUser(state,user) {
             state.user = user
         },
-        logout(state){
+        logout(state) {
+            auth.logout()
             state.user = null
-        }
+        },
     },
     actions: {
-        setCurrentUser({commit}){
-            commit('setUser', auth.user())
+        setCurrentUser({commit}, user) {
+              commit('setUser', user)
         },
-        logoutUser ({commit}){
+        logoutUser({commit}) {
             commit('logout')
-        }
+        },
     },
     getters: {
         user: state => state.user,
-        isLogged: state => (state.user !== null)
+        isLogged: state => (state.user !== null),
+        isAdmin: state => state.user.uid === '3PPDQeRVgqSS7dvjyrgVuDW6fiL2'
     }
 }
 

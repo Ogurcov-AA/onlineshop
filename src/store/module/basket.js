@@ -1,4 +1,4 @@
-import {getBasket,addProductToBasket, deleteProductFromBasket,ordering} from "../../helper/dataBase";
+import {getBasket,addProductToBasket, deleteProductFromBasket,ordering} from "../../helper/DataBase/dataBase";
 
 const basket = {
     state: {
@@ -18,13 +18,14 @@ const basket = {
         }
     },
     actions: {
-       async getBasket({commit},uid){
+        getBasket({commit},uid){
             try {
                 commit('loadingBasket', true)
                 commit('errorLoadingBasket',false)
-                const resp = await getBasket(uid)
-                commit('setBasket',resp)
+                getBasket(uid, res=>{
+                commit('setBasket',res)
                 commit('loadingBasket', false)
+                })
             }catch (e) {
                 console.log("error")
                 commit('errorLoadingBasket', true)
@@ -34,8 +35,7 @@ const basket = {
             try {
                 commit('loadingBasket', true)
                 commit('errorLoadingBasket',false)
-                const resp = await addProductToBasket(payload.uid,payload.product)
-                commit('setBasket',resp)
+                await addProductToBasket(payload.uid,payload.product)
                 commit('loadingBasket', false)
             }catch (e) {
                 commit('errorLoadingBasket',true)
@@ -49,7 +49,6 @@ const basket = {
             try {
             commit('loadingBasket', true)
             commit('errorLoadingBasket',false)
-                console.log(payload.order)
             ordering(payload.uid, payload.order)
             commit('loadingBasket', false)
         }catch (e) {
