@@ -24,7 +24,7 @@ const user = {
     getters: {
         user: state => state.user,
         isLogged: state => (state.user !== null),
-        isAdmin: state => state.user.uid === '3PPDQeRVgqSS7dvjyrgVuDW6fiL2'
+        isAdmin: state => state.user!==null && state.user?.uid === '3PPDQeRVgqSS7dvjyrgVuDW6fiL2'
     }
 }
 

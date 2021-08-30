@@ -67,7 +67,7 @@ import {eventBus} from '../main'
 
 export default {
   name: "card",
-  props: ['title', 'description', 'price', 'img', 'display', 'id','available'],
+  props: ['title', 'description', 'price', 'img', 'display', 'id', 'available'],
   data() {
     return {
       snackbar: false
@@ -81,22 +81,31 @@ export default {
   methods: {
     addToBasket(event) {
       event.stopPropagation()
-      if(this.available) {
-        let uid = this.$store.getters.user.uid
-        this.$store.dispatch('addProductToBasketList', {
-          uid,
-          product: {
-            id: this.id,
-            count: 1,
-            price: this.price,
-            img: this.img,
-            title: this.title
-          }
-        })
-        eventBus.$emit('snackbar', {snackbar: true, mess: 'Товар добавлен в корзину', timeout: 2000,color:'green'})
-      }
-      else{
-        eventBus.$emit('snackbar', {snackbar: true, mess: 'Нет в наличии', timeout: 2000,color:'red'})
+      if (this.available) {
+        if (this.$store.getters.user !== null) {
+          let uid = this.$store.getters.user.uid
+          this.$store.dispatch('addProductToBasketList', {
+            uid,
+            product: {
+              id: this.id,
+              count: 1,
+              price: this.price,
+              img: this.img,
+              title: this.title
+            }
+          })
+          eventBus.$emit('snackbar', {snackbar: true, mess: 'Товар добавлен в корзину', timeout: 2000, color: 'green'})
+        } else {
+
+          eventBus.$emit('snackbar', {
+            snackbar: true,
+            mess: 'Авторизируйтесь для добавления товара в корзину',
+            timeout: 2000,
+            color: 'red'
+          })
+        }
+      } else {
+        eventBus.$emit('snackbar', {snackbar: true, mess: 'Нет в наличии', timeout: 2000, color: 'red'})
       }
     }
   }

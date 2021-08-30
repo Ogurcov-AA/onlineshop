@@ -74,20 +74,21 @@ export default {
   },
   methods: {
     addToBasket() {
-      console.log(this.obj)
-      let uid = this.$store.getters.user.uid
-      this.$store.dispatch('addProductToBasketList', {
-        uid,
-        product: {
-          id: this.obj.id,
-          count: 1,
-          price: this.obj.price,
-          img: this.obj.imgMin,
-          title: this.obj.title
-        }
-      })
-      eventBus.$emit('snackbar', {snackbar: true, mess: 'Товар добавлен в корзину', timeout: 2000})
-      this.$store.dispatch('getBasket', this.$store.getters.user.uid)
+   if(this.$store.getters.user!==null) {
+     let uid = this.$store.getters.user.uid
+     this.$store.dispatch('addProductToBasketList', {
+       uid,
+       product: {
+         id: this.obj.id,
+         count: 1,
+         price: this.obj.price,
+         img: this.obj.imgMin,
+         title: this.obj.title
+       }
+     })
+     eventBus.$emit('snackbar', {snackbar: true, mess: 'Товар добавлен в корзину', timeout: 2000, color:'green'})
+   }
+   else   eventBus.$emit('snackbar', {snackbar: true, mess: 'Авторизируйтесь для добавления товара в корзину', timeout: 2000, color:'red'})
     },
     setRatingForProduct(rating){
       this.$store.dispatch('updateRating', {productId: this.obj.id,uid:this.$store.getters.user.uid,rating:rating})
@@ -99,7 +100,11 @@ export default {
     if (!this.$store.getters.getErrorLoading && !this.$store.getters.getLoadingFlag) {
       this.obj = this.$store.getters.getProduct
     }
-   await this.$store.dispatch('getRating',{productId: this.$route.path.substring(this.$route.path.lastIndexOf('/') + 1), uid:this.$store.getters.user.uid})
+    let uid = null
+    if(this.$store.getters.user!==null)
+      uid =this.$store.getters.user.uid
+   await this.$store.dispatch('getRating',{productId: this.$route.path.substring(this.$route.path.lastIndexOf('/') + 1),
+     uid})
     this.rating = this.$store.getters.getRating
     this.isDataLoaded = true
   },
