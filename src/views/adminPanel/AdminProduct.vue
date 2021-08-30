@@ -1,7 +1,7 @@
 <template>
   <section>
-    <adminProductSort/>
-    <adminTable v-if="isDataLoaded"
+    <adminProductSort @searchAdminProduct="sortProduct"/>
+    <adminTable
                 v-bind:headers="headers"
                 v-bind:desserts="desserts"
                 @editClick="showDialog"
@@ -29,6 +29,8 @@ export default {
     return {
       showDialogChanges: false,
       element: null,
+      sortFlag: false,
+      sortArray: [],
       headers: [
         {text: 'Название', sortable: false, divider: true, value: 'name',},
         {text: 'Артикул', value: 'id', sortable: false, divider: true,},
@@ -37,29 +39,32 @@ export default {
         {text: 'Количество на складе', value: 'count', sortable: false,},
         {text: '', value: 'btn', sortable: false, class: 'px-0'},
       ],
-      desserts: [],
-      isDataLoaded: false,
     }
   },
-  async beforeCreate() {
-    this.isDataLoaded = false
-    await this.$store.dispatch('ProductList', 'all')
-    this.loadData()
-    this.isDataLoaded = true
+  computed:{
+    desserts: {
+      get() {
+        if(!this.sortFlag)
+        return this.parseProduct()
+        else
+        return this.sortArray
+      },
+      set(sortArray){
+        console.log(sortArray)
+        this.sortArray = sortArray
+      }
+    }
   },
   methods: {
-    loadData() {
-      let list = this.$store.getters.getProductList
-      this.desserts = []
-      list.forEach(item => {
-        let obj = {
+    parseProduct(){
+     return this.$store.getters.getProductList.map(item => {
+        return {
           name: item.title,
           id: item.id,
           category: this.getCategoryForProduct(item.category).toString(),
           status: this.getAvailable(item.available),
           count: item.count
         }
-        this.desserts.push(obj)
       })
     },
     getCategoryForProduct(categoryList) {
@@ -75,8 +80,7 @@ export default {
       return "Нет в наличии"
     },
     showDialog(e) {
-      let list = this.$store.getters.getProductList
-      list.forEach(item => {
+      this.$store.getters.getProductList.forEach(item => {
         if (item.id === e)
           this.element = item
       })
@@ -84,12 +88,39 @@ export default {
     },
     removeProduct(id) {
       this.$store.dispatch('removeProduct', id)
-      this.desserts.forEach((item, index) => {
-        if (item.id === id)
-          this.desserts.splice(index, 1)
+    },
+    sortForField(item, field) {
+      if (field === null)
+        return true
+      else if (item.indexOf(field) !== -1)
+        return true
+      return false
+    },
+
+    sortProduct(data) {
+      this.sortFlag = true
+      let sortList = []
+      this.parseProduct().forEach(item => {
+        if (this.sortForField(item.category, data.category)) {
+          if (this.sortForField(item.title, data.title)) {
+            if (this.sortForField(item.id, data.article)) {
+              if (item.status === this.getAvailable(data.available)) {
+                sortList.push(item)
+              }
+            }
+          }
+        }
       })
+      this.desserts = sortList
     }
   },
+   created() {
+    this.isDataLoaded = false
+     this.$store.dispatch('ProductList', 'all')
+  //  this.loadData()
+    this.isDataLoaded = true
+  },
+
 }
 </script>
 

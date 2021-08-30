@@ -1,10 +1,11 @@
-import {removeProduct, updateProduct, uploadImg} from "../../helper/dataBase";
+import {removeProduct, updateProduct, uploadImg, getOrder, deleteOrder} from "../../helper/DataBase/dataBase";
 
 const adminPanel = {
     state: {
         imgUploadUrl: '',
         isLoadingAdminPanelDate: false,
         errorLoadingAdminPanelDate: false,
+        orderList: '',
     }
     ,
     mutations: {
@@ -14,8 +15,11 @@ const adminPanel = {
         errorLoadingAdminPanelDate(state, boolean) {
             state.errorLoadingAdminPanelDate = boolean
         },
-        setImgUrl(state, url){
+        setImgUrl(state, url) {
             state.imgUploadUrl = url
+        },
+        setOrder(state, list) {
+            state.orderList = list
         }
     },
     actions: {
@@ -50,12 +54,47 @@ const adminPanel = {
             } catch (e) {
                 commit('errorLoadingAdminPanelDate', true)
             }
+        },
+        getOrderList({commit}) {
+            try {
+                commit('errorLoadingAdminPanelDate', false)
+                commit('isLoadingAdminPanelDate', true)
+                getOrder(resp => {
+                    commit('setOrder', resp)
+                    commit('isLoadingAdminPanelDate', false)
+                })
+            } catch (e) {
+                commit('errorLoadingAdminPanelDate', true)
+            }
+        },
+        async updateCategory({commit}) {
+            try {
+                commit('errorLoadingAdminPanelDate', false)
+                commit('isLoadingAdminPanelDate', true)
+                let resp = await getOrder()
+                commit('setOrder', resp)
+                commit('isLoadingAdminPanelDate', false)
+            } catch (e) {
+                commit('errorLoadingAdminPanelDate', true)
+            }
+        },
+        async deleteOrder({commit}, payload) {
+            try {
+                console.log(payload)
+                commit('errorLoadingAdminPanelDate', false)
+                commit('isLoadingAdminPanelDate', true)
+                await deleteOrder(payload.orderId, payload.uid)
+                commit('isLoadingAdminPanelDate', false)
+            } catch (e) {
+                commit('errorLoadingAdminPanelDate', true)
+            }
         }
     },
     getters: {
         isLoadingAdminPanelDate: state => state.isLoadingAdminPanelDate,
         errorLoadingAdminPanelDate: state => state.errorLoadingAdminPanelDate,
-        imgUrl: state=> state.imgUploadUrl
+        imgUrl: state => state.imgUploadUrl,
+        getOrder: state => state.orderList,
     }
 }
 

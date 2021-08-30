@@ -16,7 +16,11 @@
         <v-list-item>
           <v-list-item-content>
             <v-checkbox v-model="isAllowEditing" label="Разрешить редактирование"></v-checkbox>
+           <v-list-item-content>
             <v-text-field label="Название" v-model="element.title" :disabled="!isAllowEditing" outlined></v-text-field>
+            <v-text-field hide-details type="number" label="Артикул" v-model="element.id" :disabled="!isAllowEditing"
+                          outlined dense></v-text-field>
+           </v-list-item-content>
             <v-textarea label="Описание" v-model="element.description" :disabled="!isAllowEditing"
                         outlined></v-textarea>
           </v-list-item-content>
@@ -34,8 +38,6 @@
           ></v-select>
           <v-text-field hide-details type="number" label="Количество" v-model="element.count"
                         :disabled="!isAllowEditing" outlined dense></v-text-field>
-          <v-text-field hide-details type="number" label="Артикул" v-model="element.id" :disabled="!isAllowEditing"
-                        outlined dense></v-text-field>
           <v-text-field hide-details type="number" label="Цена" v-model="element.price" :disabled="!isAllowEditing"
                         outlined dense></v-text-field>
         </v-list-item>
@@ -83,6 +85,8 @@
 </template>
 
 <script>
+import {checkProductElement} from '../../helper/checkProductElement'
+
 export default {
   name: "editProduct",
   props: ['element'],
@@ -98,9 +102,12 @@ export default {
     closeDialog() {
       this.$emit('closeDialog')
     },
+
     saveChange() {
+      checkProductElement(this.element)
       this.$store.dispatch('updateProduct', this.element)
     },
+
     async setImgMini(path, category, file) {
       this.imgLoading = true
       await this.$store.dispatch('uploadingImg', {path: `${path}/${category}/${file.name}`, file: file})
@@ -111,11 +118,14 @@ export default {
 
       this.imgLoading = false
     }
-  }, computed: {
+  },
+
+  computed: {
     getCategoryForProduct() {
       let list = []
       for (let item in this.$store.getters.getCategory)
         list.push(item)
+      list.push('all')
       return list
     },
     currentCategory: {
@@ -135,6 +145,7 @@ export default {
       }
     }
   },
+
   watch: {
     mini(ne) {
       let category = null

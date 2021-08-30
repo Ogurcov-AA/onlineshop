@@ -9,7 +9,7 @@
       class="elevation-1">
     <template v-slot:body="{ items }">
       <tbody class="v-table">
-      <tr v-for="item in items" :key="item.id">
+      <tr v-for="(item,index) in items" :key="item.id">
         <td>
           <v-checkbox v-model="selected"
                       :value="item"
@@ -19,10 +19,10 @@
         </td>
         <td v-for="elem of item" :key="elem">{{ elem }}</td>
         <td class="px-0">
-          <v-btn icon @click="editButtonClick(item)">
+          <v-btn icon @click="editButtonClick(item,index)">
             <v-icon>mdi-file-edit</v-icon>
           </v-btn>
-          <v-btn icon @click="removeProduct(item)">
+          <v-btn icon @click="removeProduct(item,index)">
             <v-icon>mdi-delete</v-icon>
           </v-btn>
         </td>
@@ -44,11 +44,11 @@ export default {
     }
   },
   methods: {
-    editButtonClick(item){
-      this.$emit('editClick', item.id)
+    editButtonClick(item,index){
+      this.$emit('editClick', item.id,index)
     },
-    removeProduct(item){
-      this.$emit('removeProduct', item.id)
+    removeProduct(item,index){
+      this.$emit('removeProduct', item.id,index)
     }
   }
 

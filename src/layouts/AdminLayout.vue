@@ -1,31 +1,33 @@
 <template>
   <div>
-    <basketAdminLayout/>
-  <v-tabs class="navBar"
-      v-model="tab"
-      align-with-title
-  >
-    <v-tabs-slider color="red"></v-tabs-slider>
-    <v-tab
-        class="mx-0"
-        v-for="item in items"
-        :key="item.name"
-        active-class="active"
-        style="background-color: mediumturquoise"
-        @click="changeRouter(item.url)"
-    >
-      {{ item.name }}
-    </v-tab>
-  </v-tabs>
-</div>
+    <v-toolbar flat :height="100" color="#008C9E">
+      <basketAdminLayout/>
+      <template v-slot:extension>
+        <v-tabs align-with-title
+                class="navBar"
+                v-model="tab">
+          <v-tabs-slider color="red"></v-tabs-slider>
+          <v-tab
+              class="mx-0"
+              v-for="item in items" :key="item.name"
+              style="background-color: mediumturquoise"
+              @click="changeRouter(item.url)"
+          >
+            {{ item.name }}
+          </v-tab>
+
+        </v-tabs>
+      </template>
+    </v-toolbar>
+     </div>
 </template>
 
 <script>
-import basketAdminLayout from './authLayout'
+import basketAdminLayout from './SearchAndAuthLayout'
 
 export default {
   name: "adminNavBar",
-  components:{
+  components: {
     basketAdminLayout
   },
   data() {
@@ -38,10 +40,16 @@ export default {
       ],
     }
   },
-  methods:{
-    changeRouter(url){
-
-        this.$router.push(url).catch(rej=>console.log(rej))
+  mounted() {
+    this.items.forEach((item, index) => {
+      if (item.url === this.$route.path)
+        this.tab = index
+    })
+  },
+  methods: {
+    changeRouter(url) {
+      if (this.$route.path !== url)
+        this.$router.push(url)
     }
   }
 }
