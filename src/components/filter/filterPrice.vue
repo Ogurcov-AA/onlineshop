@@ -30,7 +30,7 @@
       ></v-text-field>
     </div>
 
-    <div class="price-filter--slider">
+    <div class="price-filter--slider hidden-xs-only">
       <v-range-slider
           v-model="range"
           :max="max"
@@ -68,7 +68,7 @@ export default {
   },
   watch: {
     range() {
-      eventBus.$emit('sortByPrice', {
+      eventBus.$emit('filterByPrice', {
         minPrice: this.range[0],
         maxPrice: this.range[1]
       })
@@ -80,7 +80,7 @@ export default {
 <style lang="scss" scoped>
 .price-filter {
   display: flex;
-  width: 15rem;
+    width: 15rem;
   justify-content: space-between;
   justify-items: center;
   flex-direction: column;

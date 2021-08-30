@@ -2,7 +2,7 @@
     <div class="d-flex py-0">
       <v-btn icon color="white"
              elevation="2"
-             class="mx-10"
+             class="mr-10 ml-sm-0"
              style="background-color: #0000003D"
              @click="redirectToMainPage">
         <v-icon>mdi-home</v-icon>

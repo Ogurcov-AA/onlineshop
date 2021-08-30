@@ -1,82 +1,65 @@
 <template>
   <div>
     <v-app-bar dense prominent color="#008C9E" style="height: 8rem">
-      <div class="header">
-        <div class="search-field-position">
-          <searchElement class="search-element"/>
-          <div style="width: 10%; height: 2rem">
-              <v-btn
-                  v-if="!$auth.isAuthenticated && !$auth.loading"
-                  color="#0000003D"
-                  dark
-                  depressed
-                  elevation="10"
-                  @click="login"
-              >войти
-              </v-btn>
-              <v-btn
-                  v-if="$auth.isAuthenticated && !$auth.loading"
-                  color="#0000003D"
-                  dark
-                  depressed
-                  elevation="10"
-                  @click="logout"
-              >Выйти
-              </v-btn>
-          </div>
-        </div>
-        <div class="header-filters">
-          <filterPrice v-bind:min="0" v-bind:max="100" class="filter-right-margin"/>
-          <filterCategories class="filter-right-margin"/>
-          <availableFilter class="filter-right-margin"/>
+      <div class="header d-flex flex-column">
+        <SearchAndAuthLayout/>
+        <div class="header-filters d-flex">
+          <filterPrice class="mr-sm-10"/>
+          <filterCategories class="mr-sm-10"/>
+          <availableFilter class="ml-sm-10"/>
         </div>
       </div>
     </v-app-bar>
-    <navBar/>
+    <navBar v-bind:category='category'/>
   </div>
 </template>
 
 <script>
-import searchElement from "../components/searchElement";
-import filterPrice from "../components/filterPrice";
-import filterCategories from "../components/filterCategories";
-import availableFilter from "../components/availableFilter";
+import filterPrice from "../components/filter/filterPrice";
+import filterCategories from "../components/filter/filterCategories";
+import availableFilter from "../components/filter/availableFilter";
 import navBar from "../components/navBar";
+import SearchAndAuthLayout from "./SearchAndAuthLayout";
 
 export default {
   components: {
-    searchElement,
+    SearchAndAuthLayout,
     filterPrice,
     filterCategories,
     availableFilter,
     navBar,
   },
-  methods: {
-    login() {
-      this.$auth.loginWithPopup()
-    },
-    logout() {
-      this.$auth.logout({
-        returnTo: window.location.origin
-      });
+  data() {
+    return {
+      category: [],
     }
+  },
+  methods: {
+    getCategory() {
+      let categoryObj = this.$store.getters.getCategory
+      for (let item in categoryObj) {
+        this.category.push({name: categoryObj[item].name, url: categoryObj[item].url})
+      }
+    }
+  },
+
+  mounted() {
+    this.getCategory()
   }
 }
 </script>
 
-<style lang="scss" scoped>
+<style lang="scss">
 .search-field-position {
   display: flex;
   align-items: center;
-  margin-top: 2%;
+  margin-top: 1%;
   justify-content: space-around;
 }
 
 .header {
-  display: flex;
-  flex-direction: column;
   width: 100rem;
-  margin: 0 auto
+  margin: 0 auto;
 }
 
 .search-element {
@@ -87,11 +70,11 @@ export default {
 .header-filters {
   display: flex;
   align-items: center;
-  justify-content: space-evenly
-}
-
-.filter-right-margin {
-  margin-right: 5rem;
+  justify-content: space-evenly;
+  @media (min-width: 100px) and (max-width: 480px)
+  {
+    flex-direction: column;
+  }
 }
 
 </style>

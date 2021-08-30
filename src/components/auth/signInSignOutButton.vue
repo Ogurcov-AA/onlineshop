@@ -1,5 +1,5 @@
 <template>
-  <div class="mx-15">
+  <div class="mx-sm-15 mx-md-15">
     <div v-if="!userIsLoading">
       <v-btn
           color="#0000003D"
@@ -16,7 +16,7 @@
     <div v-else class="d-flex align-center">
       <v-btn icon
              outlined
-             class="mx-10"
+             class="mx-5"
              @click="redirectToBasket">
         <span class="red--text text-h6 text--accent-2">{{ getBasketCount }}</span>
         <v-icon>mdi-basket</v-icon>
@@ -67,7 +67,10 @@ export default {
       return this.$store.getters.isLogged
     },
     getBasketCount() {
-      return Object.keys(this.$store.getters.basket)?.length
+      if (!this.$store.getters.basket)
+        return 0
+      else
+        return Object.keys(this.$store.getters.basket)?.length
     },
   }
 }
