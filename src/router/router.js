@@ -91,6 +91,7 @@ const routes = [
             keepAlive: false,
         }
     },
+    {path: '*', redirect: '/pagenotfound'}
 ]
 
 export const router = new Router({
