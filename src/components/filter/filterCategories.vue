@@ -3,6 +3,7 @@
     <template v-slot:activator="{ on, attrs }">
       <v-btn
           color="#00BCD4"
+          class="hidden-xs-only"
           dark
           style="width: 20%"
           v-bind="attrs"
@@ -14,7 +15,7 @@
       <v-checkbox
           v-for="(item, index) in items"
           :key="index"
-          :label=item.title>
+          :label=item>
       </v-checkbox>
     </v-list>
   </v-menu>
@@ -27,14 +28,24 @@ export default {
     return {
       closeOnClick: true,
       select: [],
-      items: [
-        {title: 'Programming'},
-        {title: 'Design'},
-        {title: 'Vue'},
-        {title: 'Vuetify'},
-      ],
+      items: [],
     }
-  }
+  },
+  methods: {
+    changeSubCategoryList(category) {
+      this.items = []
+      let categoryList = this.$store.getters.getCategory
+      for (let item in categoryList) {
+        if (item === category) {
+          this.items = Object.assign(categoryList[item].subcategories)
+        }
+      }
+    }
+  },
+  created() {
+    let category = this.$route.path.substring(this.$route.path.lastIndexOf('/') + 1)
+    this.changeSubCategoryList(category)
+  },
 }
 </script>
 

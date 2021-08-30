@@ -3,23 +3,16 @@
     <div class="mt-5">
       <h1>{{ message }}</h1>
       <v-select
-          :items="['По дате добавления', 'По убыванию цены', 'По возрастанию цены']"
+          v-model="filter"
+          :items="filterItems"
+          item-text="mess"
+          item-value="name"
+          return-object
+          single-line
           placeholder="По дате добавления"
           background-color="#3333330F"
           style="width: 197px;"
-
       >
-        <template v-slot:item="{ item, attrs, on }">
-          <v-list-item
-              v-bind="attrs"
-              v-on="on"
-          >
-            <v-list-item-title
-                :id="attrs['aria-labelledby']"
-                v-text="item"
-            ></v-list-item-title>
-          </v-list-item>
-        </template>
       </v-select>
     </div>
     <div>
@@ -34,24 +27,46 @@
 </template>
 
 <script>
+import {eventBus} from "../../main";
+
 export default {
   name: "mainPageFilter",
   props: ['message'],
-  methods:{
-    displayType(str){
-      this.$emit('display',str)
+  data() {
+    return {
+      filter: null,
+      filterItems: [
+        {name: 'dateFilter', mess: 'По дате добавления'},
+        {name: 'priceUpFilter', mess: 'По возрастанию цены'},
+        {name: 'priceDownFilter', mess: 'По убываниею цены'}
+      ]
     }
+  },
+  methods: {
+    displayType(str) {
+      this.$emit('display', str)
+    }
+  },
+  watch: {
+    filter(ne) {
+      eventBus.$emit(ne.name)
+    }
+  },
+  created() {
+    eventBus.$on('dropFilter',()=>{
+      this.filter = null
+    })
   }
 }
 </script>
 
 <style scoped>
-.main-upper-part{
-  display:flex;
+.main-upper-part {
+  display: flex;
   justify-content: space-between;
   align-items: center;
   margin: 0 3%;
-  font-family: Roboto,monospace;
+  font-family: Roboto, monospace;
   font-style: normal;
   font-weight: 500;
   font-size: 20px;
