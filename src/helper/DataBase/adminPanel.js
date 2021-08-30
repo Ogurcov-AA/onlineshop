@@ -7,8 +7,9 @@ export async function removeProduct(id) {
         try {
             ref.orderByChild('id').equalTo(id).once("value", async function (snapshot) {
                 for (let item in snapshot.exportVal()) {
-                    deleteImage(snapshot.val()[item].imgMin)
-                    deleteImage(snapshot.val()[item].imgCart)
+                    console.log(item)
+                    //    deleteImage(snapshot.val()[item].imgMin)
+                    //    deleteImage(snapshot.val()[item].imgCart)
                     await snapshot.ref.child(item).remove()
                     resolve()
                 }
@@ -20,9 +21,9 @@ export async function removeProduct(id) {
     })
 }
 
-function deleteImage(path) {
+/*function deleteImage(path) {
     firebase.storage().ref(path).delete()
-}
+}*/
 
 export async function uploadImg(path, file) {
     return new Promise((resolve, reject) => {
@@ -36,33 +37,32 @@ export async function uploadImg(path, file) {
     })
 }
 
-export async function updateProduct(product) {
+export function updateProduct(product) {
     try {
-        console.log(product)
         let ref = firebase.database().ref('product')
-        ref.orderByChild('id').equalTo(product.id).once("value", async function (snapshot) {
-            for (let item in snapshot.exportVal()) {
-                console.log(item)
-                snapshot.ref.child(item).update(product)
+        ref.orderByChild('id').equalTo(product.id).once("value", function (snapshot) {
+            if (snapshot.val()) {
+                for (let item in snapshot.exportVal()) {
+                    snapshot.ref.child(item).update(product)
+                }
+            } else {
+                ref.child(product.id).update(product)
             }
-            })
+        })
     } catch (e) {
         console.log(e)
     }
 }
 
-export async function getOrder() {
-    return new Promise((resolve, reject) => {
-        try {
-            let ref = firebase.database().ref('order')
-            ref.once("value", function (snapshot) {
-                resolve(snapshot.val())
-            })
-        } catch (e) {
-            console.log(e)
-            reject()
-        }
-    })
+export function getOrder(callback) {
+    try {
+        let ref = firebase.database().ref('order')
+        ref.on("value", function (snapshot) {
+            callback(snapshot.val())
+        })
+    } catch (e) {
+        console.log(e)
+    }
 }
 
 export function deleteOrder(orderId, uid) {

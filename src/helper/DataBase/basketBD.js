@@ -6,19 +6,17 @@ export function addProductToBasket(uid, product) {
         .child(uid).child('product').push(product)
 }
 
-export async function getBasket(uid) {
-    return new Promise((resolve, reject) => {
+export function getBasket(uid, callback) {
         try {
             let ref = firebase.database().ref('basket')
                 ref.child(uid).child('product').on("value", function (snapshot) {
                     let res = snapshot.val()
-                    resolve(res)
+                    callback(res)
                 })
         } catch (e) {
             console.log("error data")
-            reject('error')
         }
-    })
+
 }
 
 export function deleteProductFromBasket(basketID, uid) {
