@@ -1,5 +1,5 @@
 <template>
-  <section class="px-5">
+  <section class="px-5 feedback">
     <div class="d-flex align-center justify-md-space-between">
       <h2>Выбран {{ count }} товар(ов)</h2>
       <h3 v-if="sum!==0">{{ sum }} руб</h3>
@@ -51,7 +51,7 @@
             outlined
             v-model="house"
             dense
-            clearable
+            type="number"
             hide-details
         />
 
@@ -60,7 +60,7 @@
             outlined
             v-model="apartment"
             dense
-            clearable
+            type="number"
             hide-details
         />
 
@@ -69,7 +69,7 @@
             outlined
             v-model="frontDoor"
             dense
-            clearable
+            type="number"
             hide-details
         />
 
@@ -78,7 +78,7 @@
             outlined
             v-model="floor"
             dense
-            clearable
+            type="number"
             hide-details
         />
       </div>
@@ -138,7 +138,7 @@ export default {
       valid: true,
       nameRules: [
         v => !!v || 'Обязательное поле',
-        v => (v && v.length <= 10) || 'Name must be less than 10 characters',
+        v => (v && v.length >= 6) || 'Более 6 символов',
       ],
       phoneRules: [
         v => !!v || 'Обязательное поле'
@@ -147,13 +147,14 @@ export default {
   },
   methods: {
     checkout() {
-      let obj = [...this.productList]
-      console.log(obj)
       if (this.$refs.ordering.validate())
         this.$store.dispatch('addOrder', {
           uid: this.$store.getters.user.uid,
           order: {
             deliveryMethod: this.deliveryMethod,
+            sum:this.sum,
+            status: 'Оплачен',
+            email: this.$store.getters.user.email,
             city: this.city,
             street: this.street,
             house: this.house,
@@ -166,11 +167,40 @@ export default {
             product: this.productList
           }
         })
+    this.$emit('deleteProductFromBasket')
     }
   },
 }
 </script>
 
-<style scoped>
+<style lang="scss" scoped>
+.feedback {
+  @media (min-width: 100px) and (max-width: 800px) {
+    border-radius: 0 10px 10px 0;
+    background: #000000;
+    position: fixed;
+    left: 98%;
+    border-right: 20px solid #FFF;
+    padding: 10px;
+    transition: left 1s;
+  }
+}
+.feedback::after {
+  @media (min-width: 100px) and (max-width: 800px) {
+    content: 'Оформление заказа';
+    color: #000;
+    position: absolute;
 
+    background-color: #C4C4C4;
+    left: -65px;
+    top: 30%;
+    transform: rotate(-90deg);
+    -webkit-transform: rotate(-90deg);
+  }
+}
+.feedback:hover {
+  @media (min-width: 100px) and (max-width: 800px) {
+    left: 45%;
+  }
+}
 </style>
